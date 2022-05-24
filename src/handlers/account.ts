@@ -1,4 +1,4 @@
-import { Account } from "../types/models";
+import { Account } from "../types"
 
 export async function ensureAccount (account: string) {
     const record = await Account.get(account)

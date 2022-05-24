@@ -1,9 +1,8 @@
 import { forceToCurrencyName } from "@acala-network/sdk-core"
 import { AccountId, CurrencyId } from "@acala-network/types/interfaces"
-import { Balance, Transfer } from "../../types"
+import { Transfer } from "../../types"
 import { ensureAccount } from "../account"
-import { ensureCallExist } from "../call"
-import { getNativeToken, getToken } from "../tokens"
+import { getToken } from "../tokens"
 import { DispatchedCallData, EventHandler } from "../types"
 
 export const createTransferInCurrencies: EventHandler = async ({ event, rawEvent }) => {

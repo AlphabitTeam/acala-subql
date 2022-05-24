@@ -4,7 +4,7 @@ import {
   isDexShareName,
   unzipDexShareName
 } from "@acala-network/sdk-core";
-import { SystemConsts, Token } from "../types/models";
+import { Token } from "../types/models";
 
 let tokenDecimalMap: Map<string, number>;
 
@@ -71,36 +71,4 @@ export async function initSystemTokens() {
 
   // ensure that all basic tokens are created
   await Promise.all(tokens.map((symbol) => getToken(symbol)));
-}
-
-export async function getNativeToken() {
-  const systemConsts = await SystemConsts.get("SYSTEM");
-
-  const token = await Token.get(systemConsts.nativeTokenId);
-
-  return token;
-}
-
-export async function getStakingToken() {
-  const systemConsts = await SystemConsts.get("SYSTEM");
-
-  const token = await Token.get(systemConsts.stakignTokenId);
-
-  return token;
-}
-
-export async function getLiquidToken() {
-  const systemConsts = await SystemConsts.get("SYSTEM");
-
-  const token = await Token.get(systemConsts.liquidTokenId);
-
-  return token;
-}
-
-export async function getStableToken() {
-  const systemConsts = await SystemConsts.get("SYSTEM");
-
-  const token = await Token.get(systemConsts.stableTokenId);
-
-  return token;
 }
