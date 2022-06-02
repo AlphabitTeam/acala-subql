@@ -28,6 +28,8 @@ export class Transfer implements Entity {
 
     public isSuccess?: boolean;
 
+    public extrinsicId?: string;
+
 
     async save(): Promise<void>{
         let id = this.id;
@@ -67,6 +69,13 @@ export class Transfer implements Entity {
     static async getByTokenId(tokenId: string): Promise<Transfer[] | undefined>{
       
       const records = await store.getByField('Transfer', 'tokenId', tokenId);
+      return records.map(record => Transfer.create(record));
+      
+    }
+
+    static async getByExtrinsicId(extrinsicId: string): Promise<Transfer[] | undefined>{
+      
+      const records = await store.getByField('Transfer', 'extrinsicId', extrinsicId);
       return records.map(record => Transfer.create(record));
       
     }

@@ -20,7 +20,6 @@ type Block @entity {
 
 type Extrinsic @entity {
   id: ID!
-
   method: String
   section: String
   args: [KVData]
@@ -31,6 +30,7 @@ type Extrinsic @entity {
   tip: String
   isSigned: Boolean
   isSuccess: Boolean
+  raw: String
 
   block: Block
   events: [Event] @derivedFrom(field: "extrinsic")
@@ -42,7 +42,7 @@ type Call @entity {
 
   section: String
   method: String
-  args:[KVData] 
+  args:[KVData]
   timestamp: Date
   isSuccess: Boolean
 
@@ -67,16 +67,33 @@ type Event @entity {
   extrinsic: Extrinsic
 }
 
+
 type Account @entity {
   id: ID!
-
+  address: String
+  name: String
   txCount: BigInt
-  createAtBlock: Block
+
+  tokens: [AccountBalance] @derivedFrom(field: "account") # group all tokens belong to the account
 
   extrinsics: [Extrinsic] @derivedFrom(field: "signer")
   calls: [Call] @derivedFrom(field: "signer")
   transferIn: [Transfer] @derivedFrom(field: "to")
   transferOut: [Transfer] @derivedFrom(field: "from")
+}
+
+
+type AccountBalance @entity {
+    id: ID! #`account`-`token`
+    account: Account
+    token: Token
+
+    total: BigInt # total balance
+    free: BigInt # free balance
+    reserved: BigInt #revert balance
+    frozen: BigInt # locked balance
+
+    updateAtBlock: BigInt # update block number
 }
 
 type Transfer @entity {
@@ -87,9 +104,9 @@ type Transfer @entity {
   token: Token
   amount: String
   amountInUSD: String
-
   timestamp: Date
   isSuccess: Boolean
+  extrinsic: Extrinsic
 }
 
 type Token @entity {

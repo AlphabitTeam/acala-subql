@@ -1,33 +1,41 @@
-import { SubstrateExtrinsic } from "@subql/types";
-import { Extrinsic } from "../types/models";
-import { ensureAccount } from "./account";
-import { ensureBlock } from "./block";
-import { getKVData } from "./utils";
+import { SubstrateExtrinsic } from '@subql/types'
+import { Extrinsic } from '../types/models/Extrinsic'
+import { ensureAccount } from './account';
+import { ensureBlock } from './block';
+import { createCalls } from './call';
+import { getKVData } from './utils'
 
-export async function ensureExtrinsic(extrinsic: SubstrateExtrinsic): Promise<Extrinsic> {
-    const idx = extrinsic.idx;
-    const recordId = `${extrinsic.block.block.header.number}-${idx}`
-    let data = await Extrinsic.get(recordId);
-    if(!data) {
-        data = new Extrinsic(recordId);
-        await data.save()
-    }
-    return data;
-}
+export async function ensureExtrinsic (extrinsic: SubstrateExtrinsic) {
+  const id = extrinsic.extrinsic.hash.toString();
 
-export async function createExtrinsic(extrinsic: SubstrateExtrinsic) {
-    const data = await ensureExtrinsic(extrinsic);
+  let record = await Extrinsic.get(id);
 
-    data.method = extrinsic.extrinsic.method.method;
-    data.section = extrinsic.extrinsic.method.section;
-    data.args = getKVData(extrinsic.extrinsic.args, extrinsic.extrinsic.argsDef);
-    //const signer = ensureAccount(extrinsic.extrinsic.signer)
-    data.nonce = extrinsic.extrinsic.nonce.toBigInt();
-    data.timestamp = extrinsic.block.timestamp;
-    data.signature = extrinsic.extrinsic.signature.toString();
-    data.tip = extrinsic.extrinsic.tip.toString();
-    data.isSigned = extrinsic.extrinsic.isSigned;
-    data.isSuccess = extrinsic.success;
+  if (!record) {
+    record = new Extrinsic(id);
+
     const block = await ensureBlock(extrinsic.block);
-    data.blockId = block.id;
+
+    record.method = extrinsic.extrinsic.method.method;
+    record.section = extrinsic.extrinsic.method.section;
+    record.args = getKVData(extrinsic.extrinsic.args);
+    record.isSigned = extrinsic.extrinsic.isSigned;
+    record.nonce = extrinsic.extrinsic.nonce.toBigInt();
+    record.timestamp = extrinsic.block.timestamp;
+    record.signature = extrinsic.extrinsic.signature.toString();
+    record.tip = extrinsic.extrinsic.tip.toString();
+    record.blockId = block.id;
+
+    const signerId = extrinsic?.extrinsic?.signer?.toString();
+  
+    if (signerId) {
+      const account = await ensureAccount(signerId);
+
+      record.signerId = account.id;
+    }
+
+    await record.save();
+  }
+
+  await createCalls(record, extrinsic);
+  return record;
 }

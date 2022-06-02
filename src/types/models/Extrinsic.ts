@@ -38,6 +38,8 @@ export class Extrinsic implements Entity {
 
     public isSuccess?: boolean;
 
+    public raw?: string;
+
     public blockId?: string;
 
 

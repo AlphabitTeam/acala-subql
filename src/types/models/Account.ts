@@ -14,9 +14,11 @@ export class Account implements Entity {
 
     public id: string;
 
-    public txCount?: bigint;
+    public address?: string;
 
-    public createAtBlockId?: string;
+    public name?: string;
+
+    public txCount?: bigint;
 
 
     async save(): Promise<void>{
@@ -39,13 +41,6 @@ export class Account implements Entity {
         }
     }
 
-
-    static async getByCreateAtBlockId(createAtBlockId: string): Promise<Account[] | undefined>{
-      
-      const records = await store.getByField('Account', 'createAtBlockId', createAtBlockId);
-      return records.map(record => Account.create(record));
-      
-    }
 
 
     static create(record: Partial<Omit<Account, FunctionPropertyNames<Account>>> & Entity): Account {

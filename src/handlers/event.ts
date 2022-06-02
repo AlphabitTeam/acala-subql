@@ -6,12 +6,21 @@ import { DispatchedEventData } from "./types";
 import {
   createTransferInCurrencies,
 } from "./history";
-
+import {
+  updateBalanceByUpdate,
+  updateBalanceByWithdrawn,
+  updateBalanceByTransferred,
+  updateBalanceByDeposit
+} from './balance'
 
 const dispatch = new Dispatcher<DispatchedEventData>();
 
 dispatch.batchRegist([
   { key: 'currencies-Transferred', handler: createTransferInCurrencies },
+  { key: 'currencies-BalanceUpdated', handler: updateBalanceByUpdate },
+  { key: 'currencies-Deposited', handler: updateBalanceByDeposit },
+  { key: 'currencies-Withdrawn', handler: updateBalanceByWithdrawn },
+  { key: 'currencies-Transferred', handler: updateBalanceByTransferred },
 ]);
 
 export async function ensureEvnet(event: SubstrateEvent) {

@@ -12,6 +12,8 @@ export {Event} from "./Event"
 
 export {Account} from "./Account"
 
+export {AccountBalance} from "./AccountBalance"
+
 export {Transfer} from "./Transfer"
 
 export {Token} from "./Token"

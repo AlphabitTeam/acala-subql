@@ -6,6 +6,8 @@ export async function ensureAccount (account: string) {
     if (record) return record
 
     const temp = new Account(account)
+    temp.address = account;
+    temp.txCount = BigInt(0);
 
     await temp.save()
 
