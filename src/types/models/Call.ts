@@ -9,6 +9,8 @@ import {
 
 
 
+type CallProps = Omit<Call, NonNullable<FunctionPropertyNames<Call>>>;
+
 export class Call implements Entity {
 
     constructor(id: string) {
@@ -49,7 +51,7 @@ export class Call implements Entity {
         assert((id !== null && id !== undefined), "Cannot get Call entity without an ID");
         const record = await store.get('Call', id.toString());
         if (record){
-            return Call.create(record);
+            return Call.create(record as CallProps);
         }else{
             return;
         }
@@ -59,26 +61,26 @@ export class Call implements Entity {
     static async getBySignerId(signerId: string): Promise<Call[] | undefined>{
       
       const records = await store.getByField('Call', 'signerId', signerId);
-      return records.map(record => Call.create(record));
+      return records.map(record => Call.create(record as CallProps));
       
     }
 
     static async getByExtrinsicId(extrinsicId: string): Promise<Call[] | undefined>{
       
       const records = await store.getByField('Call', 'extrinsicId', extrinsicId);
-      return records.map(record => Call.create(record));
+      return records.map(record => Call.create(record as CallProps));
       
     }
 
     static async getByParentCallId(parentCallId: string): Promise<Call[] | undefined>{
       
       const records = await store.getByField('Call', 'parentCallId', parentCallId);
-      return records.map(record => Call.create(record));
+      return records.map(record => Call.create(record as CallProps));
       
     }
 
 
-    static create(record: Partial<Omit<Call, FunctionPropertyNames<Call>>> & Entity): Call {
+    static create(record: CallProps): Call {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new Call(record.id);
         Object.assign(entity,record);

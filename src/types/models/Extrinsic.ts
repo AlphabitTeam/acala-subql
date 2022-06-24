@@ -9,6 +9,8 @@ import {
 
 
 
+type ExtrinsicProps = Omit<Extrinsic, NonNullable<FunctionPropertyNames<Extrinsic>>>;
+
 export class Extrinsic implements Entity {
 
     constructor(id: string) {
@@ -57,7 +59,7 @@ export class Extrinsic implements Entity {
         assert((id !== null && id !== undefined), "Cannot get Extrinsic entity without an ID");
         const record = await store.get('Extrinsic', id.toString());
         if (record){
-            return Extrinsic.create(record);
+            return Extrinsic.create(record as ExtrinsicProps);
         }else{
             return;
         }
@@ -67,19 +69,19 @@ export class Extrinsic implements Entity {
     static async getBySignerId(signerId: string): Promise<Extrinsic[] | undefined>{
       
       const records = await store.getByField('Extrinsic', 'signerId', signerId);
-      return records.map(record => Extrinsic.create(record));
+      return records.map(record => Extrinsic.create(record as ExtrinsicProps));
       
     }
 
     static async getByBlockId(blockId: string): Promise<Extrinsic[] | undefined>{
       
       const records = await store.getByField('Extrinsic', 'blockId', blockId);
-      return records.map(record => Extrinsic.create(record));
+      return records.map(record => Extrinsic.create(record as ExtrinsicProps));
       
     }
 
 
-    static create(record: Partial<Omit<Extrinsic, FunctionPropertyNames<Extrinsic>>> & Entity): Extrinsic {
+    static create(record: ExtrinsicProps): Extrinsic {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new Extrinsic(record.id);
         Object.assign(entity,record);

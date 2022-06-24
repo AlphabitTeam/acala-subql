@@ -5,6 +5,8 @@ import assert from 'assert';
 
 
 
+type AccountBalanceProps = Omit<AccountBalance, NonNullable<FunctionPropertyNames<AccountBalance>>>;
+
 export class AccountBalance implements Entity {
 
     constructor(id: string) {
@@ -43,7 +45,7 @@ export class AccountBalance implements Entity {
         assert((id !== null && id !== undefined), "Cannot get AccountBalance entity without an ID");
         const record = await store.get('AccountBalance', id.toString());
         if (record){
-            return AccountBalance.create(record);
+            return AccountBalance.create(record as AccountBalanceProps);
         }else{
             return;
         }
@@ -53,19 +55,19 @@ export class AccountBalance implements Entity {
     static async getByAccountId(accountId: string): Promise<AccountBalance[] | undefined>{
       
       const records = await store.getByField('AccountBalance', 'accountId', accountId);
-      return records.map(record => AccountBalance.create(record));
+      return records.map(record => AccountBalance.create(record as AccountBalanceProps));
       
     }
 
     static async getByTokenId(tokenId: string): Promise<AccountBalance[] | undefined>{
       
       const records = await store.getByField('AccountBalance', 'tokenId', tokenId);
-      return records.map(record => AccountBalance.create(record));
+      return records.map(record => AccountBalance.create(record as AccountBalanceProps));
       
     }
 
 
-    static create(record: Partial<Omit<AccountBalance, FunctionPropertyNames<AccountBalance>>> & Entity): AccountBalance {
+    static create(record: AccountBalanceProps): AccountBalance {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new AccountBalance(record.id);
         Object.assign(entity,record);
