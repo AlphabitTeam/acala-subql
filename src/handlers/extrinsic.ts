@@ -24,7 +24,8 @@ export async function ensureExtrinsic (extrinsic: SubstrateExtrinsic) {
     record.signature = extrinsic.extrinsic.signature.toString();
     record.tip = extrinsic.extrinsic.tip.toString();
     record.blockId = block.id;
-
+    record.isSuccess = extrinsic.success;
+    
     const signerId = extrinsic?.extrinsic?.signer?.toString();
   
     if (signerId) {
